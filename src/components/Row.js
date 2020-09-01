@@ -5,7 +5,7 @@ import movieTrailer from "movie-trailer";
 
 const Row = ({ title, fetchUrl, isLargeRow }) => {
   const [movies, setMovies] = useState([]);
-  const [trailerUrl, setTrailerUrl] = useState('');
+  const [trailerUrl, setTrailerUrl] = useState("");
   const baseURL = "https://image.tmdb.org/t/p/original";
 
   useEffect(() => {
@@ -17,12 +17,12 @@ const Row = ({ title, fetchUrl, isLargeRow }) => {
       return request;
     }
     fetchData();
-  }, [fetchUrl]);
+  }, [fetchUrl]); // 如果 useEffect 裡面有用到 props 需要放的 [] 裡
 
   console.log(movies);
 
-
   const opts = {
+    // 這是 npm react-youTube 的外觀設定
     height: "390",
     width: "100%",
     playerVars: {
@@ -32,18 +32,21 @@ const Row = ({ title, fetchUrl, isLargeRow }) => {
   };
 
   const handleClick = (movie) => {
-    if(trailerUrl){
-      setTrailerUrl('')
-    }else{
+    //
+    if (trailerUrl) {
+      //trailer => 預告片
+      setTrailerUrl(""); //如果已經開啟，再點一下關閉
+    } else {
       movieTrailer(movie?.name || "")
         .then((url) => {
-          const urlParams =new URLSearchParams(new URL(url).search) ;
-          setTrailerUrl(urlParams.get('v'));
-        })
-        .catch((error) => console.log(error)); 
-    }
-  }
+          // https://www.youtube.com/watch?v=xw1vQgVaYNQ
+          const urlParams = new URLSearchParams(new URL(url).search);
 
+          setTrailerUrl(urlParams.get("v"));
+        })
+        .catch((error) => console.log(error));
+    }
+  };
 
   return (
     <div className="row">
@@ -54,7 +57,7 @@ const Row = ({ title, fetchUrl, isLargeRow }) => {
           <img
             key={movie.id}
             className={`row__poster ${isLargeRow && "row__posterLarge"}`}
-            onClick={() => handleClick(movie) }
+            onClick={() => handleClick(movie)}
             src={`${baseURL}${
               isLargeRow ? movie.poster_path : movie.backdrop_path
             }`}
